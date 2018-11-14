@@ -1,5 +1,11 @@
 package can.aboutsqlite;
 
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+import java.text.ParseException;
+
+
 public class Memo {
 
 
@@ -19,11 +25,11 @@ public class Memo {
     public Memo() {
     }
     /*全部参数的memo构造*/
-    public Memo(int memo_id, String memo_title, String memo_ctime, String memo_dtime,int memo_priority,int memo_periodicity,
+    public Memo(String memo_title, String memo_dtime,int memo_priority,int memo_periodicity,
                 int memo_advanced,int memo_remind,int memo_paper,int user_id,int memo_done,String memo_content) {
-        this.memo_id = memo_id;
+        //this.memo_id = memo_id;
         this.memo_title= memo_title;
-        this.memo_ctime = memo_ctime;
+        //this.memo_ctime = memo_ctime;
         this.memo_dtime = memo_dtime;
         this.memo_priority = memo_priority;
         this.memo_periodicity = memo_periodicity;
@@ -34,7 +40,6 @@ public class Memo {
         this.memo_done = memo_done;
         this.memo_content = memo_content;
     }
-
     /*memo_id*/
     public int getMemo_id() {
         return memo_id;
@@ -50,20 +55,73 @@ public class Memo {
     public void setMemo_title(String memo_title) {
         this.memo_title = memo_title;
     }
+
     /*memo_ctime*/
-    public String getMemo_ctime() {
-        return memo_ctime;
+    public long getMemo_ctime() {
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date curDate = new Date(System.currentTimeMillis());//获取当前时间       
+        String str =formatter.format(curDate);
+        Date date = null;
+        try{
+            date = formatter.parse(str);// String类型转成date类型}
+        }
+        catch(ParseException e){
+            e.printStackTrace();
+        }
+
+        if (date == null) {
+            return 0;
+        } else {
+            long currentTime = date.getTime();// date类型转成long类型
+            return currentTime;
+        }
     }
-    public void setMemo_ctime(String memo_ctime) {
-        this.memo_ctime = memo_ctime;
+    public void setMemo_ctime(long memo_ctime) {
+        Date date = new Date(memo_ctime);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        //System.out.println("对应日期时间字符串：" + format.format(date));
+        this.memo_ctime=format.format(date);
     }
+
+
     /*memo_dtime*/
-    public String getMemo_dtime() {
-        return memo_dtime;
+    public long getMemo_dtime() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        try{
+            date = formatter.parse(memo_dtime);// String类型转成date类型}
+        }
+        catch(ParseException e){
+            e.printStackTrace();
+        }
+
+        if (date == null) {
+            return 0;
+        } else {
+            long currentTime = date.getTime();// date类型转成long类型
+            return currentTime;
+        }
+        /*SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        format.setTimeZone(TimeZone.getTimeZone("GMT+08:00"));// 中国北京时间，东八区
+        Date dateTime = null;
+        try {
+            dateTime = (Date) format.parse(memo_dtime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return dateTime;*/
     }
-    public void setMemo_dtime(String memo_dtime) {
-        this.memo_dtime = memo_dtime;
+
+
+    public void setMemo_dtime(long memo_dtime) {
+        Date date = new Date(memo_dtime);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        this.memo_dtime=format.format(date);
     }
+
+
+
     /*memo_priority*/
     public int getMemo_priority() {
         return memo_priority;

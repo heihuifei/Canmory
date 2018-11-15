@@ -4,8 +4,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 问题：
- * 一. 接口需要修改；短信需分为3类：1.普通短信 2.快递短信 3.车票短信
  * 
  * 为用户提供的类接口
  * main调用这个类的对象->匹配短信类型值->根据类型值进行正则表达式编译->根据编译结果返回字符串给main
@@ -17,8 +15,8 @@ public class SMSMatch {
 	private int type;
 	private String keyContent;
 	private boolean hasJudgeSMS;
-	private boolean isTicketSMS;
-	private boolean isDeliverySMS;
+	private int isTicketSMS;
+	private int isDeliverySMS;
 	
 	/*
 	 * 快递短信类型值，1-100
@@ -48,6 +46,8 @@ public class SMSMatch {
 		needPattern = true;
 		keyContent = null;
 		type = 0;
+		isDeliverySMS = 0;
+		isTicketSMS = 0;
 	}
 	
 	/**
@@ -57,14 +57,14 @@ public class SMSMatch {
 	 * 	1：快递短信
 	 * 	2：车票短信
 	 */
-	public boolean getIsTicketSMS() {
+	public int getIsTicketSMS() {
 		if (!hasJudgeSMS) {
 			setIsSpecialSMS();
 		}
 		return isTicketSMS;
 	}
 	
-	public boolean getIsDeliverySMS() {
+	public int getIsDeliverySMS() {
 		if (!hasJudgeSMS) {
 			setIsSpecialSMS();
 		}
@@ -93,14 +93,14 @@ public class SMSMatch {
 			choseType();
 		}
 		if (type == 0) {
-			isDeliverySMS = false;
-			isTicketSMS = false;
+			isDeliverySMS = 0;
+			isTicketSMS = 0;
 		} else if (type < 100) {
-			isDeliverySMS = true;
-			isTicketSMS = false;
+			isDeliverySMS = 1;
+			isTicketSMS = 0;
 		} else if (type > 100) {
-			isDeliverySMS = false;
-			isTicketSMS = true;
+			isDeliverySMS = 0;
+			isTicketSMS = 1;
 		}
 	}		
 

@@ -3,9 +3,6 @@ package com.patternStudy;
 /**
  * finished
  * 
- * 问题：
- *  1. 妈妈驿站模板？
- * 
  * DeliveryMatch类用于识别快递短信
  * 先调用getIsDelivery()返回是否快递短信(通过匹配“快递”和“取货码”两个关键字判断)
  * 在通过公有函数接口返回需求关键字信息(公司名称，取件时间，取货所需，取件地址)
@@ -57,28 +54,28 @@ public class DeliveryMatch {
 	private void matchContent() {
 		switch (deliveryType) {
 		case 1:
-			matchType1();
+			matchType1();		//菜鸟驿站
 			break;
 		case 2:
-			matchType2();
+			matchType2();		//云喇叭
 			break;
 		case 3:
-			matchType3();
+			matchType3();		//ems快递
 			break;
 		case 4:
-			matchType4();
+			matchType4();		//妈妈驿站
 			break;
 		case 5:
-			matchType5();
+			matchType5();		//顺丰速运
 			break;
 		case 6:
-			matchType6();
+			matchType6();		//微快递
 			break;
 		case 7:
-			matchType7();
+			matchType7();		//顺丰快递
 			break;
 		case 8:
-			matchType8();
+			matchType8();		//丰巢
 			break;
 		default:
 			System.out.println("ERROOR:需要新增快递模板!");
@@ -204,7 +201,8 @@ public class DeliveryMatch {
 	 * 匹配【微快递】
 	 */
 	private void matchType6() {
-		String regex = ".*\\｛([^\\｝]+).*编码([0-9]+).*到([^\\,||\\，]*).*请(.*)及时.*";
+		//String regex = ".*\\｛([^\\｝]+).*编码([0-9]+).*到([^\\,||\\，]*).*请(.*)及时.*";
+		String regex = "[^\\】*]\\】[^\u4e00-\u9fcc]*([\u4e00-\u9fcc]+)[^\u4e00-\u9fcc]*.*包裹[编码]*([0-9]+).*到([^\\,||\\，]*).*请(.*)及时.*";
 		Pattern p = Pattern.compile(regex);
 		//System.out.println(p.pattern());
 		Matcher m = p.matcher(SMSText);

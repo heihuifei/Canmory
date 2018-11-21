@@ -1,5 +1,8 @@
 package com.patternStudy;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Formatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,9 +17,12 @@ public class SMSMatch {
 	private boolean needPattern;
 	private int type;
 	private String keyContent;
+	private String title;
+	private String endTime;
 	private boolean hasJudgeSMS;
 	private int isTicketSMS;
 	private int isDeliverySMS;
+	private boolean hasHandleSMS;
 	
 	/*
 	 * 快递短信类型值，1-100
@@ -45,9 +51,12 @@ public class SMSMatch {
 		hasJudgeSMS = false;
 		needPattern = true;
 		keyContent = null;
+		title = null;
+		endTime = null;
 		type = 0;
 		isDeliverySMS = 0;
 		isTicketSMS = 0;
+		hasHandleSMS = false;
 	}
 	
 	/**
@@ -165,14 +174,71 @@ public class SMSMatch {
 	}
 
 	private void setKeyContent() {
-		if (type <= 0) {
-			keyContent = "ERROR:识别结果为普通短信!";
-		} else if (type < 100) {
-			DeliveryMatch deliveryMatch = new DeliveryMatch(SMSText, type);
-			keyContent = deliveryMatch.getKeyContent();
-		} else if (type > 100) {
-			TicketMatch ticketMatch = new TicketMatch(SMSText, type);
-			keyContent = ticketMatch.getKeyContent();
+		if (hasHandleSMS == false) {
+			handleSMS();
 		}
+	}
+	
+	private void setTitle() {
+		if (hasHandleSMS == false) {
+			handleSMS();
+		}
+	}
+	
+	private void setEndTime() {
+		if (hasHandleSMS == false) {
+			handleSMS();
+		}
+		int curMonth;
+		int endMonth;
+		int curYear;
+		String formatYear;
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date curDate = new Date(System.currentTimeMillis());
+		String curTime = formatter.format(curDate);
+		//System.out.println(curTime);
+		Matcher yearMatch = Pattern.compile("(.*?)\\-(.*?)\\-.*").matcher(curTime);
+		Matcher dateMatch = Pattern.compile("(.*?)\\-.*").matcher(endTime);
+		if (yearMatch.find() && dateMatch.find()) {
+			curMonth = Integer.parseInt(yearMatch.group(2));
+			endMonth = Integer.parseInt(dateMatch.group(1));
+			formatYear = yearMatch.group(1);
+			if (curMonth > endMonth) {
+				curYear = Integer.parseInt(formatYear) + 1;
+				formatYear = String.valueOf(curYear);
+			}
+			endTime = formatYear + "-" + endTime;
+		} else {
+			System.out.println("时间处理函数的\"yyyy-\"格式错误");
+		}
+	}
+	
+	private void handleSMS() {
+		if (hasHandleSMS == false) {
+			if (type <= 0) {
+				keyContent = "ERROR:识别结果为普通短信!";
+			} else if (type < 100) {
+				DeliveryMatch deliveryMatch = new DeliveryMatch(SMSText, type);
+				keyContent = deliveryMatch.getKeyContent();
+				title = deliveryMatch.getTitle();
+			} else if (type > 100) {
+				TicketMatch ticketMatch = new TicketMatch(SMSText, type);
+				keyContent = ticketMatch.getKeyContent();
+				title = ticketMatch.getTitle();
+				endTime = ticketMatch.getEndTime();
+			}
+			hasHandleSMS = true;
+		}
+	}
+
+	public String getTitle() {
+		// TODO Auto-generated method stub
+		setTitle();
+		return title;
+	}
+	
+	public String getTicketEndTime() {
+		setEndTime();
+		return endTime;
 	}
 }

@@ -25,6 +25,8 @@ public class DeliveryMatch {
 	private String deliveryTime;
 	private String deliveryLocation;
 	private String deliveryNeed;
+	private String title;
+	private boolean hasHandleSMS;
 
 	DeliveryMatch(String SMSText, int deliveryType) {
 		this.SMSText = SMSText;
@@ -33,6 +35,8 @@ public class DeliveryMatch {
 		deliveryTime = null;
 		deliveryLocation = null;
 		deliveryNeed = null;
+		title = null;
+		hasHandleSMS = false;
 	}
 	
 	public String getKeyContent() {
@@ -42,12 +46,15 @@ public class DeliveryMatch {
 	}
 
 	private void setKeyContent() {
-		matchContent();
-		if (deliveryNeed == null) {
-			deliveryNeed = "本条短信或收件人手机尾号";
-		}
-		if (deliveryTime == null) {
-			deliveryTime = "工作时间内";
+		if (hasHandleSMS == false) {
+			matchContent();
+			if (deliveryNeed == null) {
+				deliveryNeed = "本条短信或收件人手机尾号";
+			}
+			if (deliveryTime == null) {
+				deliveryTime = "工作时间内";
+			}
+			hasHandleSMS = true;
 		}
 	}
 	
@@ -252,5 +259,12 @@ public class DeliveryMatch {
 		} else {
 			System.out.println("【微快递】匹配失败");
 		}
+	}
+
+	public String getTitle() {
+		// TODO Auto-generated method stub
+		setKeyContent();
+		title = "您有" + companyName + "待取货";
+		return title;
 	}
 }
